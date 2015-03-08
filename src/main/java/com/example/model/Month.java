@@ -5,11 +5,24 @@ import javax.persistence.Embeddable;
 
 import com.example.exception.DomainException;
 
+/**
+ * Represents a month in a year between 1900 and 2100
+ */
 @Embeddable
-public class Month implements Comparable {
+public final class Month implements Comparable<Month> {
 	
-	@Column(name="MONTH", length=6)
+	private static final int MIN_YEAR = 1900;
+	
+	private static final int MAX_YEAR = 2100;
+	
+	@Column(name="MONTH")
 	private final String value;
+	
+	// for JPAs benefit
+	@SuppressWarnings("unused")
+	private Month() {
+		this.value = null;
+	}
 
 	public Month(String value) {
 		if(!isValid(value)) {
@@ -19,7 +32,13 @@ public class Month implements Comparable {
 	}
 
 	public static boolean isValid(String value) {
-		if (value == null || !isInteger(value) || !(value.length() == 6)) {
+		if (value == null 
+				|| !isInteger(value) 
+				|| value.length() != 6
+				|| getYear(value) < MIN_YEAR
+				|| getYear(value) > MAX_YEAR
+				|| getMonth(value) < 1
+				|| getMonth(value) >12) {
 			return false;
 		}
 		return true;
@@ -37,18 +56,39 @@ public class Month implements Comparable {
 		}
 		return true;
 	}
+	
+	private static int getYear(String year) {
+		return Integer.parseInt(year.substring(0, 4));
+	}
+
+	private static int getMonth(String months) {
+		return Integer.parseInt(months.substring(4, 6));
+	}
+	
+	public boolean isBefore(Month other) {
+		if(this.compareTo(other) == -1) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isAfter(Month other) {
+		if(this.compareTo(other) == 1) {
+			return true;
+		}
+		return false;
+	}
 
 	@Override
-	public int compareTo(Object o) {
-		if(o == null) {
+	public int compareTo(Month other) {
+		if(other == null) {
 			throw new NullPointerException();
 		}
-		Month other = (Month)o;
 		Integer thisMonth = Integer.valueOf(this.value);
 		Integer otherMonth = Integer.valueOf(other.getMonthAsString());
-		if(thisMonth > otherMonth) {
+		if(otherMonth > thisMonth) {
 			return 1;
-		} else if(thisMonth < otherMonth) {
+		} else if(otherMonth < thisMonth) {
 			return -1;
 		}
 		return 0;
@@ -64,15 +104,20 @@ public class Month implements Comparable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (getClass() != obj.getClass()) return false;
+		if(this == obj) return true;
+		if(obj == null) return false;
+		if(getClass() != obj.getClass()) return false;
 		Month other = (Month) obj;
-		if (value == null) {
-			if (other.value != null) return false;
-		} else if (!value.equals(other.value)) {
+		if(value == null) {
+			if(other.value != null) return false;
+		} else if(!value.equals(other.value)) {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Month [value=" + value + "]";
 	}
 }

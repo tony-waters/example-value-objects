@@ -25,13 +25,15 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class RepositoryConfig {
 	@Bean
 	public DataSource dataSource() throws SQLException {
-		System.out.println("############ Useing TEST config");
 		EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
 		return builder.setType(EmbeddedDatabaseType.H2).build();
 	}
 	
 	@Bean
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws SQLException {
+		//
+		// Comment out one of the next 2 lines
+		//
 		HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 //		EclipseLinkJpaVendorAdapter vendorAdapter = new EclipseLinkJpaVendorAdapter();
 		vendorAdapter.setGenerateDdl(true);
@@ -48,11 +50,12 @@ public class RepositoryConfig {
 		Properties properties = new Properties();
 		properties.setProperty("hibernate.show_sql", "true");
 		properties.setProperty("hibernate.format_sql", "true"); 
-//		properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
 		properties.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
 		properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
 		properties.setProperty("hibernate.event.merge.entity_copy_observer", "allow");
-//		properties.setProperty("eclipselink.weaving", "false");
+		properties.setProperty("eclipselink.weaving", "false");
+		properties.setProperty("eclipselink.logging.level.sql", "FINE");
+		properties.setProperty("eclipselink.logging.parameters", "true");
 		return properties;
 	}
 	
