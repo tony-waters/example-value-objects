@@ -66,17 +66,11 @@ public final class Month implements Comparable<Month> {
 	}
 	
 	public boolean isBefore(Month other) {
-		if(this.compareTo(other) == -1) {
-			return true;
-		}
-		return false;
+		return this.compareTo(other) == -1;
 	}
 	
 	public boolean isAfter(Month other) {
-		if(this.compareTo(other) == 1) {
-			return true;
-		}
-		return false;
+		return this.compareTo(other) == 1;
 	}
 
 	@Override
@@ -86,10 +80,10 @@ public final class Month implements Comparable<Month> {
 		}
 		Integer thisMonth = Integer.valueOf(this.value);
 		Integer otherMonth = Integer.valueOf(other.getMonthAsString());
-		if(otherMonth > thisMonth) {
-			return 1;
-		} else if(otherMonth < thisMonth) {
+		if(thisMonth < otherMonth) {
 			return -1;
+		} else if(thisMonth > otherMonth) {
+			return 1;
 		}
 		return 0;
 	}

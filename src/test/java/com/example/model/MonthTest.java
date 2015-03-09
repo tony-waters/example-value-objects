@@ -1,11 +1,13 @@
 package com.example.model;
 
+import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.is;
 import org.junit.Test;
 
 import com.example.exception.DomainException;
 
 /**
- * Some basic tests for Month
+ * Some basic 'sanity check' tests for Month
  */
 public class MonthTest {
 
@@ -47,5 +49,12 @@ public class MonthTest {
 	@Test
 	public void monthStringLegal() {
 		new Month("200012");
+	}
+	
+	@Test
+	public void compareMonths_isBefore() {
+		Month month = new Month("200001");
+		assertThat(month.isBefore(new Month("200002")), is(true));
+		assertThat(month.isAfter(new Month("199912")), is(true));
 	}
 }

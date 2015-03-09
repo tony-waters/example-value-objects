@@ -24,18 +24,14 @@ public class MonthRange {
 	
 	public MonthRange(Month start, Month end) {
 		if(!isValid(start, end)) {
-			throw new DomainException("Not a valid month range[" + start.getMonthAsString() + "-" + end.getMonthAsString() +"]");
+			throw new DomainException("Not a valid month range");
 		}
 		this.start = start;
 		this.end = end;
 	}
 	
 	public static boolean isValid(Month start, Month end) {
-		// no need to check start and end for null - its already done in Month
-		if(start.compareTo(end) != 1) { 
-			return false;
-		}
-		return true;
+		return start.isBefore(end);
 	}
 
 	public Month getStart() {
